@@ -94,8 +94,8 @@ export default function Home() {
           </div>
           <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
             <div className="text-blue-600 font-bold mb-2">04</div>
-            <h3 className="font-bold text-lg mb-2">Tamper-Proof Logs</h3>
-            <p className="text-slate-600">Crypto-verified audit trails that hold up under scrutiny.</p>
+            <h3 className="font-bold text-lg mb-2">Tamper-Evident Logs</h3>
+            <p className="text-slate-600">Audit trails that generate a verifiable standard of proof for courts.</p>
           </div>
         </div>
       </section>
@@ -192,15 +192,15 @@ export default function Home() {
             <li className="flex gap-4">
               <div className="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">2</div>
               <div>
-                <h4 className="font-bold text-lg mb-1">No more attendance disputes</h4>
-                <p className="text-slate-600">Immutable records make "I was there" arguments impossible.</p>
+                <h4 className="font-bold text-lg mb-1">Reduce attendance disputes</h4>
+                <p className="text-slate-600">Highly defensible records make attendance manipulation extremely difficult.</p>
               </div>
             </li>
             <li className="flex gap-4">
               <div className="bg-blue-100 text-blue-600 w-10 h-10 rounded-full flex items-center justify-center shrink-0 font-bold">3</div>
               <div>
-                <h4 className="font-bold text-lg mb-1">No more back-and-forth</h4>
-                <p className="text-slate-600">Courts accept DocSlip format instantly without revisions.</p>
+                <h4 className="font-bold text-lg mb-1">Streamline court acceptance</h4>
+                <p className="text-slate-600">DocSlip format aligns with typical probation expectations, minimizing revision requests.</p>
               </div>
             </li>
           </ul>
