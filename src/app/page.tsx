@@ -94,8 +94,8 @@ export default function Home() {
           </div>
           <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
             <div className="text-blue-600 font-bold mb-2">04</div>
-            <h3 className="font-bold text-lg mb-2">Tamper-Evident Logs</h3>
-            <p className="text-slate-600">Audit trails that generate a verifiable standard of proof for courts.</p>
+            <h3 className="font-bold text-lg mb-2">Tamper-Proof Logs</h3>
+            <p className="text-slate-600">Crypto-verified audit trails that hold up under scrutiny.</p>
           </div>
         </div>
       </section>
