@@ -1,0 +1,105 @@
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------
+// DOCSLIP (PRIVATE PROVIDERS)
+// Table prefix: docslip_
+// ------------------------------------------------------
+
+model DocslipProvider {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  passwordHash    String
+  facilityName    String
+  stateLicense    String
+  
+  participants    DocslipParticipant[]
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model DocslipParticipant {
+  id              String         @id @default(cuid())
+  providerId      String
+  provider        DocslipProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  
+  name            String
+  courtCaseNumber String?
+  programTargetHrs Float         @default(12.0)
+  programType     String         @default("12-Hour DUI Sub-A")
+  status          String         @default("ACTIVE") // ACTIVE, COMPLETED, DROPPED
+  
+  logs            EngineAttendanceLog[]     // Using the shared engine for tracking
+  certificates    DocslipCompliancePacket[]
+
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+}
+
+model DocslipCompliancePacket {
+  id              String             @id @default(cuid())
+  participantId   String
+  participant     DocslipParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  
+  uniqueHash      String             @unique
+  totalHours      Float
+  completionDate  DateTime           @default(now())
+  
+  isValid         Boolean            @default(true)
+  
+  createdAt       DateTime           @default(now())
+}
+
+// ------------------------------------------------------
+// SHARED ENGINE (TRACKING & VERIFICATION)
+// Table prefix: engine_
+// ------------------------------------------------------
+
+model EngineAttendanceLog {
+  id                String             @id @default(cuid())
+  
+  // Link to the B2B participant. (If adding complavion later, add a probationerId field).
+  participantId     String
+  participant       DocslipParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  
+  status            String             // VERIFIED_PRESENT, MISSED
+  hoursCredited     Float              @default(1.0)
+  timestamp         DateTime           @default(now())
+  
+  latitude          Float?
+  longitude         Float?
+  livenessPhotoUrl  String?
+  eventHash         String?            @unique
+}
+
+// ------------------------------------------------------
+// COMPLIANCE SHIELD: RBAC & AUDIT LOGGING
+// Table prefix: shield_
+// ------------------------------------------------------
+
+model ShieldSystemAccessLog {
+  id              String   @id @default(cuid())
+  
+  actorId         String   // The ID of the user (Founder ID, Provider ID)
+  actorRole       String   // "SUPER_ADMIN", "PROVIDER_ADMIN", "STAFF"
+  
+  actionType      String   // "VIEW", "EXPORT", "VERIFY", "MODIFY"
+  resourceType    String   // "participant", "certificate", "attendance_log"
+  resourceId      String?  
+  
+  // Break-glass enforcement: required if Super Admin views a sensitive record.
+  reason          String?  
+  isBreakGlass    Boolean  @default(false)
+  
+  ipAddress       String?
+  userAgent       String?
+  
+  timestamp       DateTime @default(now())
+}
