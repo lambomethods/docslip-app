@@ -8,6 +8,7 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
   const db = getShieldedClient({
     actorId: "PUBLIC_VERIFIER",
     actorRole: "READONLY_PUBLIC",
+    providerId: "PUBLIC_VERIFICATION_BYPASS",
     reason: `Viewed public verification link for hash ${resolvedParams.hash}`
   });
 

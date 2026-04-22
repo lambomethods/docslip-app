@@ -2,19 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getShieldedClient } from '@/lib/db';
 import crypto from 'crypto';
 
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+
 export async function POST(req: NextRequest) {
   try {
-    const { participantId, actorId, actorRole } = await req.json();
-
-    if (!participantId || !actorId || !actorRole) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    const session = await getServerSession(authOptions);
+    if (!session || !(session.user as any).providerId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Standard RBAC check - in a real app this actorId comes from session auth
-    // We instantiate the shielded client to enforce CJIS logging
+    const { participantId } = await req.json();
+
+    if (!participantId) {
+      return NextResponse.json({ error: "Missing participant ID" }, { status: 400 });
+    }
+
     const db = getShieldedClient({
-      actorId,
-      actorRole,
+      actorId: (session.user as any).id,
+      actorRole: (session.user as any).role,
+      providerId: (session.user as any).providerId,
       ipAddress: req.headers.get("x-forwarded-for") || "127.0.0.1",
       userAgent: req.headers.get("user-agent") || "UNKNOWN"
     });

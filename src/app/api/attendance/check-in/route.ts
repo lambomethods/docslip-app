@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { getShieldedClient } from "@/lib/db";
+import { getShieldedClient, baseClient } from "@/lib/db";
 
 export async function POST(req: NextRequest) {
   try {
@@ -38,10 +38,7 @@ export async function POST(req: NextRequest) {
     // on its schema, so the Shielded Client would crash trying to push `where: { providerId }` into it.
     // However, we just verified the Participant ownership manually above!
     // NOTE: Ideally, the engine table has the provider ID natively or we use a separate safe extension.
-    import { PrismaClient } from "@prisma/client";
-    const rawDb = new PrismaClient();
-
-    const log = await rawDb.engineAttendanceLog.create({
+    const log = await baseClient.engineAttendanceLog.create({
       data: {
         participantId: participant.id,
         status: "VERIFIED_PRESENT",
@@ -50,7 +47,7 @@ export async function POST(req: NextRequest) {
     });
 
     // 3. Manually push to the Access Log to maintain the shield guarantees
-    await rawDb.shieldSystemAccessLog.create({
+    await baseClient.shieldSystemAccessLog.create({
       data: {
         actorId: (session.user as any).id,
         actorRole: (session.user as any).role,

@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 // The base, unshielded client can only be used safely in internal non-user-facing system tasks
 // or the actual initial Auth.js login flow. Do not export this into generic UI/API routes!
-const baseClient = new PrismaClient();
+export const baseClient = new PrismaClient();
 
 /**
  * Creates a shielded instance of the Prisma Client.
@@ -25,9 +25,10 @@ export function getShieldedClient(context: {
           
           // 1. Enforce Multi-Tenant Isolation (Mandatory)
           if (context.actorRole !== 'SUPER_ADMIN') {
-             args.where = { ...args.where, providerId: context.providerId };
              if (operation === 'create' || operation === 'createMany') {
-                (args as any).data.providerId = context.providerId;
+                (args as any).data = { ...(args as any).data, providerId: context.providerId };
+             } else {
+                (args as any).where = { ...(args as any).where, providerId: context.providerId };
              }
           } else if (!context.reason) {
              throw new Error("CJIS COMPLIANCE FAULT: Super Admins cannot bypass tenant boundary without a required break-glass reason.");
