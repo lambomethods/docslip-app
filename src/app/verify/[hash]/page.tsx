@@ -39,101 +39,115 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
   }
 
   const { participant } = packet;
+  const isCompleted = packet.totalHours >= participant.programTargetHrs;
+  const status = isCompleted ? "Completed" : "In Progress";
+  
+  const sortedLogs = participant.logs.sort((a,b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  const startDate = sortedLogs.length > 0 ? new Date(sortedLogs[0].timestamp).toLocaleDateString('en-US') : 'N/A';
+  const lastDate = sortedLogs.length > 0 ? new Date(sortedLogs[sortedLogs.length - 1].timestamp).toLocaleDateString('en-US') : 'N/A';
 
   return (
-    <div className="min-h-screen bg-slate-100 py-10 px-6 font-sans">
-      <div className="max-w-3xl mx-auto bg-white shadow-2xl p-12 border border-slate-200">
+    <div className="min-h-screen bg-slate-100 py-10 px-6 font-sans text-slate-900">
+      <div className="max-w-3xl mx-auto bg-white p-12 shadow-sm border border-slate-300">
         
-        {/* Certificate Header */}
-        <div className="flex justify-between items-start border-b-2 border-slate-900 pb-6 mb-8">
-          <div>
-             <h1 className="text-3xl font-extrabold uppercase tracking-widest text-slate-900">DocSlip</h1>
-             <p className="text-slate-500 font-bold uppercase tracking-wider text-sm">Official Compliance Packet</p>
-          </div>
-          <div className="text-right">
-             <div className="inline-block bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 border border-emerald-200 uppercase tracking-widest mb-2">Verified Authentic</div>
-             <p className="text-xs text-slate-400 font-mono mb-1">PKT-ID: {packet.id}</p>
-             <p className="text-xs text-slate-400 font-mono">HASH: {packet.uniqueHash}</p>
+        {/* Header (top of page) */}
+        <div className="text-center border-b-2 border-black pb-8 mb-8">
+          <h1 className="text-2xl font-bold uppercase tracking-wide mb-6">Program Completion Record</h1>
+          <div className="text-sm space-y-1">
+            <p className="font-bold text-base">{participant.provider.facilityName}</p>
+            <p>{participant.provider.email}</p>
+            <p>State License Number: {participant.provider.stateLicense}</p>
           </div>
         </div>
 
-        {/* Core Subject Data */}
-        <section className="mb-10">
-           <h2 className="text-lg font-bold border-b border-slate-200 pb-2 mb-4 uppercase text-slate-800 tracking-wider">1. Participant Completion Record</h2>
-           <div className="grid grid-cols-2 gap-6 bg-slate-50 p-6 rounded border border-slate-100">
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Participant Name</p>
-               <p className="font-bold text-xl">{participant.name}</p>
-             </div>
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Court Case #</p>
-               <p className="font-bold text-xl">{participant.courtCaseNumber || 'N/A'}</p>
-             </div>
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Program Type</p>
-               <p className="font-bold text-lg">{participant.programType}</p>
-             </div>
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Total Verified Hours</p>
-               <p className="font-bold text-lg text-blue-700">{packet.totalHours.toFixed(1)} / {participant.programTargetHrs.toFixed(1)}</p>
-             </div>
+        {/* Participant Information */}
+        <div className="mb-8">
+           <h2 className="text-sm font-bold border-b border-black pb-1 mb-4 uppercase tracking-wider">Participant Information</h2>
+           <div className="grid grid-cols-2 gap-y-3 text-sm">
+             <div><span className="font-bold">Participant Name:</span> {participant.name}</div>
+             <div><span className="font-bold">Case/Reference Number:</span> {participant.courtCaseNumber || 'N/A'}</div>
+             <div className="col-span-2"><span className="font-bold">Program Type:</span> {participant.programType}</div>
            </div>
-        </section>
+        </div>
 
-        {/* Provider Data */}
-        <section className="mb-10">
-           <h2 className="text-lg font-bold border-b border-slate-200 pb-2 mb-4 uppercase text-slate-800 tracking-wider">2. Provider Authorization</h2>
-           <div className="grid grid-cols-2 gap-6 p-6 border border-slate-100">
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">Facility Name</p>
-               <p className="font-bold">{participant.provider.facilityName}</p>
-             </div>
-             <div>
-               <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">State License #</p>
-               <p className="font-bold font-mono">{participant.provider.stateLicense}</p>
-             </div>
+        {/* Program Summary */}
+        <div className="mb-8">
+           <h2 className="text-sm font-bold border-b border-black pb-1 mb-4 uppercase tracking-wider">Program Summary</h2>
+           <div className="grid grid-cols-2 gap-y-3 text-sm mb-4">
+             <div><span className="font-bold">Required Hours:</span> {participant.programTargetHrs.toFixed(1)}</div>
+             <div><span className="font-bold">Completed Hours:</span> {packet.totalHours.toFixed(1)}</div>
+             <div className="col-span-2"><span className="font-bold">Completion Status:</span> {status}</div>
            </div>
-        </section>
+           
+           <div className="grid grid-cols-2 gap-y-3 text-sm mt-6">
+             <div className="col-span-2 font-bold mb-1">Date Range</div>
+             <div><span className="font-bold">Start Date:</span> {startDate}</div>
+             <div><span className="font-bold">Last Session Date:</span> {lastDate}</div>
+           </div>
+        </div>
 
-        {/* Audit Log */}
-        <section className="mb-10">
-           <h2 className="text-lg font-bold border-b border-slate-200 pb-2 mb-4 uppercase text-slate-800 tracking-wider">3. Append-Only Attendance Log</h2>
-           <table className="w-full text-left border-collapse">
+        {/* Attendance Record */}
+        <div className="mb-10">
+           <h2 className="text-sm font-bold border-b border-black pb-1 mb-4 uppercase tracking-wider">Attendance Record</h2>
+           <table className="w-full text-left text-sm border-collapse">
              <thead>
-               <tr className="bg-slate-100 text-slate-700 text-xs uppercase tracking-wider">
-                 <th className="p-3 border-b border-slate-200">Date/Time</th>
-                 <th className="p-3 border-b border-slate-200">Status</th>
-                 <th className="p-3 border-b border-slate-200">Hours</th>
-                 <th className="p-3 border-b border-slate-200">Location Tag</th>
+               <tr className="border-b border-black">
+                 <th className="py-2 font-bold w-1/3">Date</th>
+                 <th className="py-2 font-bold w-1/3">Time</th>
+                 <th className="py-2 font-bold w-1/3">Status</th>
                </tr>
              </thead>
              <tbody>
                {participant.logs.length === 0 ? (
-                 <tr><td colSpan={4} className="p-4 text-center text-slate-500">No verified logs found.</td></tr>
+                 <tr><td colSpan={3} className="py-4 italic text-slate-500">No records found.</td></tr>
                ) : (
-                 participant.logs.map((log) => (
-                   <tr key={log.id} className="text-sm font-medium border-b border-slate-50">
-                     <td className="p-3 font-mono">{new Date(log.timestamp).toLocaleString()}</td>
-                     <td className="p-3 text-emerald-700">{log.status}</td>
-                     <td className="p-3">{log.hoursCredited.toFixed(1)}</td>
-                     <td className="p-3 text-slate-400 font-mono text-xs">{log.latitude ? `${log.latitude.toFixed(4)}, ${log.longitude?.toFixed(4)}` : 'On-Site Verified'}</td>
-                   </tr>
-                 ))
+                 participant.logs.map((log) => {
+                   const date = new Date(log.timestamp);
+                   return (
+                     <tr key={log.id} className="border-b border-slate-200">
+                       <td className="py-3">{date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</td>
+                       <td className="py-3">{date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
+                       <td className="py-3">Verified</td>
+                     </tr>
+                   );
+                 })
                )}
              </tbody>
            </table>
-        </section>
+        </div>
 
-        {/* Validation Footer */}
-        <section className="mt-16 pt-8 border-t-2 border-slate-900 border-dashed text-center">
-           <h3 className="font-bold uppercase tracking-widest text-slate-800 mb-2">Statement of Authenticity</h3>
-           <p className="text-sm text-slate-500 max-w-lg mx-auto mb-6 leading-relaxed">
-             This dynamic document serves as an independently verifiable record of attendance, backed by integrity hashes. The records contained within are appended directly by the authorized provider to this append-only ledger.
+        {/* Certification Statement */}
+        <div className="mb-12 border border-slate-300 bg-slate-50 p-4">
+           <p className="text-sm leading-relaxed font-medium">
+             This record reflects attendance and participation in the program listed above.
+             All sessions were recorded at the time of occurrence.
            </p>
-           <p className="text-xs font-mono bg-slate-50 p-3 rounded text-slate-600 border border-slate-200 inline-block">
-             System Verification URL: docslip.com/verify/{packet.uniqueHash}
-           </p>
-        </section>
+        </div>
+
+        {/* Provider Verification */}
+        <div className="mb-16">
+           <h2 className="text-sm font-bold border-b border-black pb-1 mb-8 uppercase tracking-wider">Provider Verification</h2>
+           <div className="flex justify-between items-end text-sm">
+             <div className="w-5/12">
+               <div className="border-b border-black pb-1 mb-2 font-bold text-base h-8 flex items-end">
+                 {participant.provider.facilityName}
+               </div>
+               <p className="text-xs uppercase tracking-wider text-slate-600">Provider Name / Signature</p>
+             </div>
+             <div className="w-4/12">
+               <div className="border-b border-black pb-1 mb-2 font-bold h-8 flex items-end">
+                 {new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
+               </div>
+               <p className="text-xs uppercase tracking-wider text-slate-600">Date Issued</p>
+             </div>
+           </div>
+        </div>
+
+        {/* Verification Section (bottom) */}
+        <div className="pt-6 border-t border-black text-sm">
+           <p className="mb-1"><span className="font-bold">Verification ID:</span> {packet.uniqueHash}</p>
+           <p><span className="font-bold">Verify at:</span> docslip.app/verify/{packet.uniqueHash}</p>
+        </div>
 
       </div>
     </div>
