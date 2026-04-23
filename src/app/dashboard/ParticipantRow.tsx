@@ -5,7 +5,7 @@ import ParticipantActions from "./ParticipantActions";
 
 type Log = {
   id: string;
-  createdAt: Date;
+  timestamp: Date;
   status: string;
   hoursCredited: number;
 };
@@ -80,10 +80,10 @@ export default function ParticipantRow({ p }: { p: Participant }) {
                       <div key={log.id} className="flex justify-between items-center py-2 border-b border-slate-50 last:border-0 last:pb-0">
                         <div className="flex items-center gap-3">
                            <span className="text-xs font-bold uppercase tracking-widest text-slate-400">
-                             {new Date(log.createdAt).toLocaleDateString()}
+                             {new Date(log.timestamp).toLocaleDateString()}
                            </span>
                            <span className="text-sm text-slate-700 font-mono">
-                             {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                             {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                            </span>
                         </div>
                         <div className="flex items-center gap-3">
