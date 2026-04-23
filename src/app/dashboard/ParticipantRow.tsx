@@ -22,8 +22,9 @@ type Participant = {
 export default function ParticipantRow({ p }: { p: Participant }) {
   const [expanded, setExpanded] = useState(false);
 
-  const totalHours = p.logs.reduce((sum, log) => sum + log.hoursCredited, 0);
-  const percentComplete = Math.min((totalHours / p.programTargetHrs) * 100, 100);
+  const totalHours = p.logs ? p.logs.reduce((sum, log) => sum + (log.hoursCredited || 0), 0) : 0;
+  const targetHrs = p.programTargetHrs && p.programTargetHrs > 0 ? p.programTargetHrs : 12;
+  const percentComplete = Math.min((totalHours / targetHrs) * 100, 100);
 
   return (
     <>
@@ -52,7 +53,7 @@ export default function ParticipantRow({ p }: { p: Participant }) {
             <div className="w-full bg-slate-100 rounded-full h-2 max-w-[100px]">
               <div className={`h-2 rounded-full ${percentComplete >= 100 ? 'bg-emerald-500' : 'bg-blue-500'}`} style={{ width: `${percentComplete}%` }}></div>
             </div>
-            <span className="text-sm font-bold text-slate-700">{totalHours}/{p.programTargetHrs} hrs</span>
+            <span className="text-sm font-bold text-slate-700">{totalHours}/{targetHrs} hrs</span>
           </div>
         </td>
         <td className="p-5 text-right" onClick={(e) => e.stopPropagation()}>
