@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getShieldedClient } from "@/lib/db";
-import ParticipantActions from "./ParticipantActions";
+import ParticipantRow from "./ParticipantRow";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -61,35 +61,9 @@ export default async function DashboardPage() {
                 </td>
               </tr>
             ) : (
-              participants.map(p => {
-                const totalHours = p.logs.reduce((sum, log) => sum + log.hoursCredited, 0);
-                const percentComplete = Math.min((totalHours / p.programTargetHrs) * 100, 100);
-
-                return (
-                  <tr key={p.id} className="hover:bg-slate-50 transition border-b border-slate-50">
-                    <td className="p-5">
-                      <p className="font-bold text-slate-900 text-lg">{p.name}</p>
-                      <p className="text-xs text-slate-400 font-mono mt-1">{p.courtCaseNumber || 'File Pending'}</p>
-                    </td>
-                    <td className="p-5">
-                      <span className="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold uppercase tracking-wider">
-                        {p.programType}
-                      </span>
-                    </td>
-                    <td className="p-5 hidden md:table-cell">
-                      <div className="flex items-center gap-3">
-                        <div className="w-full bg-slate-100 rounded-full h-2 max-w-[100px]">
-                          <div className={`h-2 rounded-full ${percentComplete >= 100 ? 'bg-emerald-500' : 'bg-blue-500'}`} style={{ width: `${percentComplete}%` }}></div>
-                        </div>
-                        <span className="text-sm font-bold text-slate-700">{totalHours}/{p.programTargetHrs} hrs</span>
-                      </div>
-                    </td>
-                    <td className="p-5 text-right">
-                      <ParticipantActions participantId={p.id} participantName={p.name} />
-                    </td>
-                  </tr>
-                );
-              })
+              participants.map(p => (
+                <ParticipantRow key={p.id} p={p as any} />
+              ))
             )}
           </tbody>
         </table>
