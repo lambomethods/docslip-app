@@ -13,9 +13,9 @@ export default async function DashboardPage() {
   // Use the shielded client - this automatically scopes all DB queries
   // to the providerId inside the JWT.
   const shieldedDb = getShieldedClient({
-    actorId: "test",
+    actorId: (session.user as any).providerId || "unknown",
     actorRole: "PROVIDER_ADMIN",
-    providerId: "PUBLIC_VERIFICATION_BYPASS",
+    providerId: (session.user as any).providerId || "unknown",
     reason: "Dashboard load"
   });
 
