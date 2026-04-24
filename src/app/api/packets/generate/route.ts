@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     }
 
     const db = getShieldedClient({
-      actorId: (session.user as any).id,
+      actorId: (session.user as any).providerId,
       actorRole: (session.user as any).role,
       providerId: (session.user as any).providerId,
       ipAddress: req.headers.get("x-forwarded-for") || "127.0.0.1",
