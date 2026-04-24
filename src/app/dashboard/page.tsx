@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { getShieldedClient } from "@/lib/db";
 import ParticipantRow from "./ParticipantRow";
+import AddParticipantButton from "./AddParticipantButton";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -37,9 +38,7 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Active Participants</h1>
           <p className="text-slate-500 font-medium mt-1">Manage and verify court mandate attendance.</p>
         </div>
-        <button className="bg-blue-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-200 hover:bg-blue-700 transition transform hover:-translate-y-0.5 whitespace-nowrap">
-          + Add Participant
-        </button>
+        <AddParticipantButton />
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
