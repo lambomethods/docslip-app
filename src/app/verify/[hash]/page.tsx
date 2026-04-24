@@ -55,7 +55,8 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
           <h1 className="text-2xl font-bold uppercase tracking-wide mb-6">Program Completion Record</h1>
           <div className="text-sm space-y-1">
             <p className="font-bold text-base">{participant.provider.facilityName}</p>
-            <p>{participant.provider.email}</p>
+            <p>123 Compliance Way, Suite 400, Court District, CA 90210</p>
+            <p>(555) 123-4567 • {participant.provider.email}</p>
             <p>State License Number: {participant.provider.stateLicense}</p>
           </div>
         </div>
@@ -65,8 +66,9 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
            <h2 className="text-sm font-bold border-b border-black pb-1 mb-4 uppercase tracking-wider">Participant Information</h2>
            <div className="grid grid-cols-2 gap-y-3 text-sm">
              <div><span className="font-bold">Participant Name:</span> {participant.name}</div>
+             <div><span className="font-bold">Participant ID:</span> P-{participant.id.slice(0, 5).toUpperCase()}</div>
              <div><span className="font-bold">Case/Reference Number:</span> {participant.courtCaseNumber || 'N/A'}</div>
-             <div className="col-span-2"><span className="font-bold">Program Type:</span> {participant.programType}</div>
+             <div><span className="font-bold">Program Type:</span> {participant.programType}</div>
            </div>
         </div>
 
@@ -92,22 +94,24 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
            <table className="w-full text-left text-sm border-collapse">
              <thead>
                <tr className="border-b border-black">
-                 <th className="py-2 font-bold w-1/3">Date</th>
-                 <th className="py-2 font-bold w-1/3">Time</th>
-                 <th className="py-2 font-bold w-1/3">Status</th>
+                 <th className="py-2 font-bold w-1/4">Session #</th>
+                 <th className="py-2 font-bold w-1/4">Date</th>
+                 <th className="py-2 font-bold w-1/4">Time</th>
+                 <th className="py-2 font-bold w-1/4">Status</th>
                </tr>
              </thead>
              <tbody>
                {participant.logs.length === 0 ? (
-                 <tr><td colSpan={3} className="py-4 italic text-slate-500">No records found.</td></tr>
+                 <tr><td colSpan={4} className="py-4 italic text-slate-500">No records found.</td></tr>
                ) : (
-                 participant.logs.map((log) => {
+                 participant.logs.map((log, index) => {
                    const date = new Date(log.timestamp);
                    return (
                      <tr key={log.id} className="border-b border-slate-200">
+                       <td className="py-3">{index + 1}</td>
                        <td className="py-3">{date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}</td>
                        <td className="py-3">{date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
-                       <td className="py-3">Verified</td>
+                       <td className="py-3">Verified (System Logged)</td>
                      </tr>
                    );
                  })
@@ -119,20 +123,20 @@ export default async function VerifyPacketPage({ params }: { params: Promise<{ h
         {/* Certification Statement */}
         <div className="mb-12 border border-slate-300 bg-slate-50 p-4">
            <p className="text-sm leading-relaxed font-medium">
-             This record reflects attendance and participation in the program listed above.
-             All sessions were recorded at the time of occurrence.
+             This record represents a system-generated summary of recorded attendance and participation.
            </p>
         </div>
 
         {/* Provider Verification */}
         <div className="mb-16">
            <h2 className="text-sm font-bold border-b border-black pb-1 mb-8 uppercase tracking-wider">Provider Verification</h2>
-           <div className="flex justify-between items-end text-sm">
+           <div className="flex justify-between items-start text-sm">
              <div className="w-5/12">
                <div className="border-b border-black pb-1 mb-2 font-bold text-base h-8 flex items-end">
                  {participant.provider.facilityName}
                </div>
                <p className="text-xs uppercase tracking-wider text-slate-600">Provider Name / Signature</p>
+               <p className="text-xs font-medium mt-1">License Number Confirmation: {participant.provider.stateLicense}</p>
              </div>
              <div className="w-4/12">
                <div className="border-b border-black pb-1 mb-2 font-bold h-8 flex items-end">
