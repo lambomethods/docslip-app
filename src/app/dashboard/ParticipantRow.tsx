@@ -56,8 +56,8 @@ export default function ParticipantRow({ p }: { p: Participant }) {
             <span className="text-sm font-bold text-slate-700">{totalHours}/{targetHrs} hrs</span>
           </div>
         </td>
-        <td className="p-5 text-right" onClick={(e) => e.stopPropagation()}>
-          <ParticipantActions participantId={p.id} participantName={p.name} />
+        <td className="p-5 text-right print:hidden" onClick={(e) => e.stopPropagation()}>
+          <ParticipantActions participantId={p.id} participantName={p.name} isOverHours={totalHours >= targetHrs} />
         </td>
       </tr>
       

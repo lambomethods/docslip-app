@@ -19,7 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <div className="min-h-screen bg-slate-50 flex font-sans">
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-900 text-white min-h-screen p-6 flex flex-col">
+      <aside className="w-64 bg-slate-900 text-white min-h-screen p-6 flex flex-col print:hidden">
         <div className="font-extrabold text-2xl tracking-widest text-white mb-10">DocSlip Dashboard</div>
         <SidebarNav />
         <div className="pt-6 border-t border-slate-800 text-sm">
@@ -28,7 +28,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto print:overflow-visible">
         {children}
       </main>
     </div>

@@ -2,12 +2,17 @@
 
 import { useState } from "react";
 
-export default function ParticipantActions({ participantId, participantName }: { participantId: string, participantName: string }) {
+export default function ParticipantActions({ participantId, participantName, isOverHours = false }: { participantId: string, participantName: string, isOverHours?: boolean }) {
   const [loading, setLoading] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
   const [generating, setGenerating] = useState(false);
 
   const handleCheckIn = async () => {
+    if (isOverHours) {
+      if (!confirm(`${participantName} has already completed their required hours. Are you sure you want to log additional session time?`)) {
+        return;
+      }
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/attendance/check-in", {

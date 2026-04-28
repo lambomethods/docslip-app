@@ -32,13 +32,13 @@ export default async function DashboardPage() {
   const serializedParticipants = JSON.parse(JSON.stringify(participants));
 
   return (
-    <div className="p-10 max-w-6xl mx-auto">
+    <div className="p-10 max-w-6xl mx-auto print:p-0">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
         <div>
           <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Active Participants</h1>
           <p className="text-slate-500 font-medium mt-1">Manage and verify court mandate attendance.</p>
         </div>
-        <AddParticipantButton />
+        <div className="print:hidden"><AddParticipantButton /></div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
               <th className="p-5 border-b border-slate-100">Name / Case #</th>
               <th className="p-5 border-b border-slate-100">Program</th>
               <th className="p-5 border-b border-slate-100 hidden md:table-cell">Progress</th>
-              <th className="p-5 border-b border-slate-100 text-right">Actions</th>
+              <th className="p-5 border-b border-slate-100 text-right print:hidden">Actions</th>
             </tr>
           </thead>
           <tbody>

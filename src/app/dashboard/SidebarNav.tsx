@@ -24,7 +24,7 @@ export default function SidebarNav() {
         href="/dashboard/logs" 
         className={`block px-4 py-3 rounded-lg font-bold transition-colors ${pathname === '/dashboard/logs' ? 'bg-blue-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800'}`}
       >
-        Audit Logs
+        System Logs
       </Link>
     </nav>
   );
